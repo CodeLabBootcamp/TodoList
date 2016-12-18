@@ -25,6 +25,15 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         this.items = items;
     }
 
+    public void addTask(Task task) {
+        items.add(0, task);
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<Task> getItems() {
+        return items;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
