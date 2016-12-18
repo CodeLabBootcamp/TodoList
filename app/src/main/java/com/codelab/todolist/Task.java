@@ -1,7 +1,5 @@
 package com.codelab.todolist;
 
-import java.util.Date;
-
 /**
  * Created by SniperDW on 12/18/2016.
  */

@@ -18,9 +18,9 @@ import butterknife.ButterKnife;
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
     Context context;
-    boolean filter;
-    ArrayList<Task> items;
-    ArrayList<Task> filteredTasks;
+    boolean filter; // show all tasks or undone tasks
+    ArrayList<Task> items; // list of all tasks
+    ArrayList<Task> filteredTasks; // list of viewed tasks
 
     public TasksAdapter(Context context, ArrayList<Task> items, boolean filter) {
         this.context = context;
@@ -29,6 +29,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         filter();
     }
 
+    // change filter value
     public void setFilter(boolean filter) {
         this.filter = filter;
         filter();
@@ -39,21 +40,24 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    // return items for saving
     public ArrayList<Task> getItems() {
         return items;
     }
 
-    private void filterAndNotify() {
-        filter();
-        notifyDataSetChanged();
-    }
-
+    // filter items
     private void filter() {
         filteredTasks = new ArrayList<>();
         for (Task item : items) {
-            if (!item.isDone() || !filter)
+            if (!item.isDone() || !filter) // if filter is ON, then all items are added
                 filteredTasks.add(item);
         }
+    }
+
+    // filter and notify adapter for changes
+    private void filterAndNotify() {
+        filter();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -93,6 +97,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
             // THE RIGHT WAY
             ButterKnife.bind(this, v);
 
+            // on check listener to update the model
             isDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -100,6 +105,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
                     filterAndNotify();
                 }
             });
+
 /*          THE OLD WAY
             isDone = (CheckBox) v.findViewById(R.id.is_done);
             title = (TextView) v.findViewById(R.id.title);
