@@ -10,8 +10,7 @@ public class Task {
 
     private String title;
     private String description;
-    private Date createdAt;
-    private Date deadLine;
+    private String deadLine;
     private boolean done;
 
     public Task(String title) {
@@ -21,13 +20,12 @@ public class Task {
     public Task() {
     }
 
-    public Task(String title, String description, Date createdAt, Date deadLine, boolean done) {
+    public Task(String title, String description, String deadLine) {
         this.title = title;
         this.description = description;
-        this.createdAt = createdAt;
         this.deadLine = deadLine;
-        this.done = done;
     }
+
 
     public String getTitle() {
         return title;
@@ -45,19 +43,11 @@ public class Task {
         this.description = description;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getDeadLine() {
+    public String getDeadLine() {
         return deadLine;
     }
 
-    public void setDeadLine(Date deadLine) {
+    public void setDeadLine(String deadLine) {
         this.deadLine = deadLine;
     }
 
