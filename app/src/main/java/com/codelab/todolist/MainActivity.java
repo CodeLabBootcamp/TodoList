@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.my_switch)
+    Switch mySwitch;
+
 //    @BindView(R.id.task_title)
 //    EditText taskTitle;
 
@@ -32,6 +37,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+
+        mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                adapter.setFilter(b);
+            }
+        });
     }
 
     @Override
@@ -45,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         }.getType());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new TasksAdapter(this, savedTasks);
+        adapter = new TasksAdapter(this, savedTasks, mySwitch.isChecked());
         recyclerView.setAdapter(adapter);
 
     }

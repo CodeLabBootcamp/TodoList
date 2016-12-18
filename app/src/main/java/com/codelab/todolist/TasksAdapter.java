@@ -18,11 +18,20 @@ import butterknife.ButterKnife;
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
 
     Context context;
+    boolean filter;
     ArrayList<Task> items;
+    ArrayList<Task> filteredTasks;
 
-    public TasksAdapter(Context context, ArrayList<Task> items) {
+    public TasksAdapter(Context context, ArrayList<Task> items, boolean filter) {
         this.context = context;
         this.items = items;
+        this.filter = filter;
+        filter();
+    }
+
+    public void setFilter(boolean filter) {
+        this.filter = filter;
+        filter();
     }
 
     public void addTask(Task task) {
@@ -34,6 +43,19 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
         return items;
     }
 
+    private void filterAndNotify() {
+        filter();
+        notifyDataSetChanged();
+    }
+
+    private void filter() {
+        filteredTasks = new ArrayList<>();
+        for (Task item : items) {
+            if (!item.isDone() || !filter)
+                filteredTasks.add(item);
+        }
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
@@ -43,7 +65,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        Task task = items.get(position);
+        Task task = filteredTasks.get(position);
 
         holder.title.setText(task.getTitle());
         holder.description.setText(task.getDescription());
@@ -53,7 +75,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return filteredTasks.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -67,14 +89,15 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
         public ViewHolder(View v) {
             super(v);
+
             // THE RIGHT WAY
             ButterKnife.bind(this, v);
-
 
             isDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    items.get(getLayoutPosition()).setDone(b);
+                    filteredTasks.get(getLayoutPosition()).setDone(b);
+                    filterAndNotify();
                 }
             });
 /*          THE OLD WAY
