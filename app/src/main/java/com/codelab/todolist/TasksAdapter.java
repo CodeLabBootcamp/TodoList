@@ -1,13 +1,18 @@
 package com.codelab.todolist;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.codelab.todolist.Utilities.Consts;
 
 import java.util.ArrayList;
 
@@ -52,12 +57,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
             if (!item.isDone() || !filter) // if filter is ON, then all items are added
                 filteredTasks.add(item);
         }
-    }
 
-    // filter and notify adapter for changes
-    private void filterAndNotify() {
-        filter();
-        notifyDataSetChanged();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        }, 100);
+
     }
 
     @Override
@@ -84,6 +91,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.root)
+        LinearLayout root;
         @BindView(R.id.is_done)
         CheckBox isDone;
         @BindView(R.id.title)
@@ -102,7 +111,16 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> 
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     filteredTasks.get(getLayoutPosition()).setDone(b);
-                    filterAndNotify();
+                    filter();
+                }
+            });
+
+            root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, NewTaskActivity.class);
+                    intent.putExtra(Consts.POSITION, getLayoutPosition());
+                    context.startActivity(intent);
                 }
             });
 

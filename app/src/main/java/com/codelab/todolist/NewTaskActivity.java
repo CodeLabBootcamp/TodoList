@@ -1,14 +1,13 @@
 package com.codelab.todolist;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.codelab.todolist.Utilities.Consts;
+import com.codelab.todolist.Utilities.GsonHelper;
 
 import java.util.ArrayList;
 
@@ -23,31 +22,47 @@ public class NewTaskActivity extends AppCompatActivity {
     EditText description;
     @BindView(R.id.deadline)
     EditText deadline;
+    @BindView(R.id.add)
+    Button add;
+
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_task);
         ButterKnife.bind(this);
+
+
+        position = getIntent().getIntExtra(Consts.POSITION, -1);
+
+        if (position != -1) {
+
+            ArrayList<Task> tasks = GsonHelper.loadTasks(this);
+            Task task = tasks.get(position);
+
+            title.setText(task.getTitle());
+            description.setText(task.getDescription());
+            deadline.setText(task.getDeadLine());
+            add.setText(R.string.edit);
+        }
+
     }
 
     public void addTask(View view) {
 
-        Gson gson = new Gson();
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String tasksJSON = preferences.getString("TASKS", "[]");
+        ArrayList<Task> savedTasks = GsonHelper.loadTasks(this);
 
-        ArrayList<Task> savedTasks = gson.fromJson(tasksJSON, new TypeToken<ArrayList<Task>>() {
-        }.getType());
+        Task newTask = new Task(title.getText().toString(), description.getText().toString(), deadline.getText().toString());
 
-        savedTasks.add(0, new Task(title.getText().toString(), description.getText().toString(), deadline.getText().toString()));
-
-        tasksJSON = gson.toJson(savedTasks);
-
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("TASKS", tasksJSON);
-        editor.apply();
+        if (position != -1) {
+            savedTasks.remove(position);
+            savedTasks.add(position, newTask);
+        } else {
+            savedTasks.add(0, newTask);
+        }
+        GsonHelper.saveTasks(this, savedTasks);
 
         finish();
 

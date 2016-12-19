@@ -11,10 +11,12 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import com.codelab.todolist.Utilities.GsonHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     TasksAdapter adapter;
 
+    Map<String, String> values;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,16 +51,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        // getting default shared preferences
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String tasksJSON = preferences.getString("TASKS", "[]");
-
-        // deserialize tasks
-        ArrayList<Task> savedTasks = new Gson().fromJson(tasksJSON, new TypeToken<ArrayList<Task>>() {
-        }.getType());
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new TasksAdapter(this, savedTasks, mySwitch.isChecked());
+        adapter = new TasksAdapter(this, GsonHelper.loadTasks(this), mySwitch.isChecked());
         recyclerView.setAdapter(adapter);
 
     }
@@ -72,13 +67,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         ArrayList<Task> tasks = adapter.getItems();
 
-        // serialize tasks
-        String tasksJSON = new Gson().toJson(tasks);
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("TASKS", tasksJSON);
-        editor.apply();
+        GsonHelper.saveTasks(this, tasks);
 
         super.onStop();
     }
