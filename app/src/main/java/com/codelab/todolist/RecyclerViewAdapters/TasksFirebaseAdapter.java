@@ -13,10 +13,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-/**
- * Created by SniperDW on 12/19/2016.
- */
-
 public class TasksFirebaseAdapter extends FirebaseRecyclerAdapter<Task, TasksViewHolder> {
 
     Context context;
