@@ -24,6 +24,8 @@ public class NewTaskActivity extends AppCompatActivity {
     EditText deadline;
     @BindView(R.id.add)
     Button add;
+    @BindView(R.id.delete)
+    Button delete;
 
     int position;
 
@@ -45,6 +47,7 @@ public class NewTaskActivity extends AppCompatActivity {
             description.setText(task.getDescription());
             deadline.setText(task.getDeadLine());
             add.setText(R.string.edit);
+            delete.setVisibility(View.VISIBLE);
         }
 
     }
@@ -62,6 +65,16 @@ public class NewTaskActivity extends AppCompatActivity {
         } else {
             savedTasks.add(0, newTask);
         }
+        GsonHelper.saveTasks(this, savedTasks);
+
+        finish();
+
+    }
+
+    public void deleteTask(View view) {
+
+        ArrayList<Task> savedTasks = GsonHelper.loadTasks(this);
+        savedTasks.remove(position);
         GsonHelper.saveTasks(this, savedTasks);
 
         finish();

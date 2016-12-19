@@ -40,4 +40,13 @@
         android:textSize="22sp"
         android:onClick="addTask"
         android:text="@string/add" />
+
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:onClick="deleteTask"
+        android:visibility="invisible"
+        android:text="@string/delete" />
 </LinearLayout>
