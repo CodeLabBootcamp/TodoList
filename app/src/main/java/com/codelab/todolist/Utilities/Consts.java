@@ -6,6 +6,6 @@ package com.codelab.todolist.Utilities;
 
 public class Consts {
 
-    public static final String POSITION = "POSITION";
+    public static final String KEY = "KEY";
 
 }
