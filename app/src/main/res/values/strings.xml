@@ -8,4 +8,9 @@
     <string name="filter">Filter</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="edit_task">Edit Task</string>
+    <string name="enter_your_task_here">Enter your task here</string>
+    <string name="all">All</string>
+    <string name="ongoing">Ongoing</string>
+    <string name="done">Done</string>
 </resources>

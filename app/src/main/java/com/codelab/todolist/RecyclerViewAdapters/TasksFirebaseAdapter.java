@@ -1,54 +1,36 @@
 package com.codelab.todolist.RecyclerViewAdapters;
 
-import android.content.Context;
-import android.content.Intent;
-import android.view.View;
-import android.widget.CompoundButton;
-
-import com.codelab.todolist.Activities.NewTaskActivity;
 import com.codelab.todolist.Models.Task;
 import com.codelab.todolist.R;
-import com.codelab.todolist.Utilities.Consts;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 public class TasksFirebaseAdapter extends FirebaseRecyclerAdapter<Task, TasksViewHolder> {
 
-    Context context;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-    public TasksFirebaseAdapter(Context context, DatabaseReference ref) {
+    /**
+     * a constructor to initialize the adapter
+     *
+     * @param ref (the passing query/reference which the data will be pulled from)
+     */
+    public TasksFirebaseAdapter(Query ref) {
         super(Task.class, R.layout.item_task, TasksViewHolder.class, ref);
-        this.context = context;
     }
 
-
+    /**
+     * a method that's called to populate teh ViewHolder, and fill it's content with
+     * data from the model
+     *
+     * @param holder   (the view holder that's being populated)
+     * @param task     (the task that's associated with this row)
+     * @param position (the position of this row)
+     */
     @Override
     protected void populateViewHolder(TasksViewHolder holder, final Task task, final int position) {
+        // pass reference to the holder, so it can use it for manipulating the data row
+        holder.setRef(getRef(position));
+        // set title to TextView
         holder.title.setText(task.getTitle());
-        holder.description.setText(task.getDescription());
-        holder.deadline.setText(task.getDeadLine());
+        // set checked status of the CheckBox
         holder.isDone.setChecked(task.isDone());
-
-        holder.isDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                String key = getRef(position).getKey();
-                task.setDone(b);
-                DatabaseReference ref = database.getReference("tasks/" + key);
-                ref.setValue(task);
-            }
-        });
-
-        holder.root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, NewTaskActivity.class);
-                intent.putExtra(Consts.KEY, getRef(position).getKey());
-                context.startActivity(intent);
-            }
-        });
     }
-
 }
